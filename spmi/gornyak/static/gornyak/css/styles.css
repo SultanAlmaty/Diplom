@@ -1,8 +1,37 @@
- .block   {
-    background-color: lightblue;
+header   {
+    background: linear-gradient(to right,  rgba(14,27,56,1) 0%,rgba(57,90,211,1) 100%);
+
 }
 
-header {
-    padding: 400px 0;
-    background-color: lightblue;
+header,section, footer {
+    padding: 10px 0;
+}
+
+.footer-divider {
+      border-right: 1px solid white;
+}
+
+.footer-divider2 {
+    border-left: 1px solid white;
+}
+
+.footer-text {
+    color: white;
+}
+
+p {
+      color: white;
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 5px 0;
+    }
+
+.custom-link {
+     color: white;
+     text-decoration: none;
+     cursor: pointer;
+}
+
+.custom-link:hover{
+    color:blue;
 }
