@@ -1,0 +1,17 @@
+{% extends 'gornyak/index.html' %}
+
+{% block content %}
+  <h2>Upcoming Events</h2>
+  <ul>
+    {% for event in events %}
+      <li>
+        <h3>{{ event.name }}</h3>
+        <p><strong>Start:</strong> {{ event.start_datetime }}</p>
+        <p><strong>End:</strong> {{ event.end_datetime }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+        <p><strong>Description:</strong> {{ event.description }}</p>
+        <p><a href="{% url 'register_for_event' event.id %}">Register</a></p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

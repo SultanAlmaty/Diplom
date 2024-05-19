@@ -26,15 +26,20 @@
     </div>
   </header>
 
-  <section class="block">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h2 class="text-center text-dark">Спортивный клуб Горняк</h2>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+              <h1>Welcome to the Event Site</h1>
+                <nav>
+                  <a href="{% url 'event_list' %}">Events</a>
+            <!-- Добавьте другие ссылки, если нужно -->
+                </nav>
+                {% block content %}
+                <!-- Дочерние шаблоны вставляют свой контент сюда -->
+                {% endblock %}
+            </div>
         </div>
-      </div>
     </div>
-    </section>
 
 <footer class="bg-dark text-light">
     <div class="container py-4">

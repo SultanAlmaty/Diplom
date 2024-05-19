@@ -1,3 +1,18 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.container-flex {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
 header   {
     background: linear-gradient(to right,  rgba(14,27,56,1) 0%,rgba(57,90,211,1) 100%);
 
