@@ -1,9 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Event, EventRegistration
 from .forms import EventRegistrationForm
+from django.utils.dateparse import parse_date
 
 # Create your views here.
 
@@ -30,6 +31,31 @@ def register_for_event(request, event_id):
 
     return render(request, 'gornyak/register_for_event.html', {'form': form, 'event': event})
 
+
 def event_list(request):
+    sport_type = request.GET.get('sport_type')
+    location = request.GET.get('location')
+    date = request.GET.get('date')
+
     events = Event.objects.all()
-    return render(request, 'gornyak/event_list.html', {'events': events})
+
+    if sport_type:
+        events = events.filter(sport_type=sport_type)
+    if location:
+        events = events.filter(location=location)
+    if date:
+        events = events.filter(start_datetime__date__gte=parse_date(date))
+
+    # Получение уникальных значений для типов спорта и локаций
+    sport_types = Event.objects.values_list('sport_type', flat=True).distinct()
+    locations = Event.objects.values_list('location', flat=True).distinct()
+
+    return render(request, 'gornyak/event_list.html', {
+        'events': events,
+        'sport_types': sport_types,
+        'locations': locations,
+    })
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    return render(request, 'gornyak/event_detail.html', {'event': event})

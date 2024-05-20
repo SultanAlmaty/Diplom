@@ -1,17 +1,60 @@
 {% extends 'gornyak/index.html' %}
 
 {% block content %}
-  <h2>Upcoming Events</h2>
-  <ul>
-    {% for event in events %}
-      <li>
-        <h3>{{ event.name }}</h3>
-        <p><strong>Start:</strong> {{ event.start_datetime }}</p>
-        <p><strong>End:</strong> {{ event.end_datetime }}</p>
-        <p><strong>Location:</strong> {{ event.location }}</p>
-        <p><strong>Description:</strong> {{ event.description }}</p>
-        <p><a href="{% url 'register_for_event' event.id %}">Register</a></p>
-      </li>
-    {% endfor %}
-  </ul>
+<h1>Events</h1>
+
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+            <label for="sport_type">Sport Type</label>
+            <select id="sport_type" name="sport_type" class="form-control">
+                <option value="">All</option>
+                {% for sport in sport_types %}
+                    <option value="{{ sport }}" {% if request.GET.sport_type == sport %}selected{% endif %}>{{ sport }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+            <label for="location">Location</label>
+            <select id="location" name="location" class="form-control">
+                <option value="">All</option>
+                {% for loc in locations %}
+                    <option value="{{ loc }}" {% if request.GET.location == loc %}selected{% endif %}>{{ loc }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+            <label for="date">Start Date From</label>
+            <input type="date" id="date" name="date" class="form-control" value="{{ date|default_if_none:'' }}">
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Event Name</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Location</th>
+            <th scope="col">Sport Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>{{ event.start_datetime|date:"Y-m-d" }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.sport_type }}</td>
+                <td>{{ event.get_status_display }}</td>
+                <td><a href="{% url 'event_detail' event.id %}">More</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
