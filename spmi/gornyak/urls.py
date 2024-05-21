@@ -6,7 +6,6 @@ from .views import register_for_event, event_list, event_detail
 
 urlpatterns = [
     path('', views.index),
-    path('admin/', admin.site.urls),
     path('events/', event_list, name='event_list'),
     path('events/<int:event_id>/', event_detail, name='event_detail'),
     path('event/<int:event_id>/register/', register_for_event, name='register_for_event'),

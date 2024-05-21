@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gornyak.apps.GornyakConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
