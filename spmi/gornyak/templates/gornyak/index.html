@@ -25,10 +25,12 @@
         <div class="col-6 text-end">
           {% if user.is_authenticated %}
             <span class="text-white">{{ user.username }}</span>
-            <a href="{% url 'accounts:logout' %}" class="btn btn-light">Выйти</a>
+            <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-light">Выйти</button>
+            </form>
           {% else %}
             <a href="{% url 'accounts:login' %}" class="btn btn-light">Войти</a>
-
           {% endif %}
         </div>
       </div>
