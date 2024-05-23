@@ -24,7 +24,8 @@
         </div>
         <div class="col-6 text-end">
           {% if user.is_authenticated %}
-            <span class="text-white">{{ user.username }}</span>
+            <span class="text-white">{{ user.first_name }}</span>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-light">Личный кабинет</a>
             <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
               {% csrf_token %}
               <button type="submit" class="btn btn-light">Выйти</button>

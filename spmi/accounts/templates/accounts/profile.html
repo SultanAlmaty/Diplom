@@ -1,0 +1,10 @@
+{% extends 'gornyak/index.html' %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+<p>Имя: {{ user.first_name }}</p>
+<p>Фамилия: {{ user.last_name }}</p>
+<p>Отчество: {{ user.middle_name }}</p>
+<p>Группа: {{ user.group_name }}</p>
+<p>Шифр студента: {{ user.username }}</p>
+{% endblock %}

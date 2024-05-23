@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
+from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
+from accounts.models import CustomUser
 from .models import Event , EventRegistration
 
 @admin.register(Event)
@@ -13,4 +17,21 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     list_filter = ('event', 'user')
     search_fields = ('event__name', 'user__username')
 
-# Register your models here.
+
+
+
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('middle_name', 'group_name')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'first_name', 'last_name', 'middle_name', 'group_name', 'password1', 'password2')}
+        ),
+    )
+
+admin.site.register(CustomUser, CustomUserAdmin)
