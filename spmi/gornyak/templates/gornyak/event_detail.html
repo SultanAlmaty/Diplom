@@ -6,17 +6,33 @@
 
 <!-- Основная информация -->
 <div class="black-text">
-    <p><strong>Start Date and Time:</strong> <span>{{ event.start_datetime }}</span></p>
-    <p><strong>End Date and Time:</strong> <span>{{ event.end_datetime }}</span></p>
-    <p><strong>Location:</strong> <span>{{ event.location }}</span></p>
-    <p><strong>Sport Type:</strong> <span>{{ event.sport_type }}</span></p>
-    <p><strong>Status:</strong> <span>{{ event.get_status_display }}</span></p>
+    <p><strong>Дата начала:</strong> <span>{{ event.start_datetime }}</span></p>
+    <p><strong>Дата окончания:</strong> <span>{{ event.end_datetime }}</span></p>
+    <p><strong>Локация:</strong> <span>{{ event.location }}</span></p>
+    <p><strong>Вид спорта:</strong> <span>{{ event.sport_type }}</span></p>
+    <p><strong>Статус:</strong> <span>{{ event.get_status_display }}</span></p>
 </div>
 
 <!-- Описание с большим шрифтом -->
 <div class="mt-4">
     <p class="description-text black-text">{{ event.description }}</p>
 </div>
+
+<h3>Количество зарегистрированных участников: {{ registration_count }}</h3>
+
+{% if user.is_authenticated %}
+    {% if not user_registered %}
+        <form method="post" action="{% url 'register_for_event' event.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Регистрация на мероприятие</button>
+        </form>
+    {% else %}
+        <p>Вы уже зарегистрированы на это мероприятие.</p>
+    {% endif %}
+{% else %}
+    <p>Пожалуйста, <a href="{% url 'login' %}">войдите</a> для регистрации на мероприятие.</p>
+{% endif %}
+
 
 <!-- Кнопка возврата -->
 <a href="{% url 'event_list' %}" class="btn btn-primary mt-3">Back to Events</a>

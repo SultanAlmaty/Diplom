@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Event, EventRegistration
+from django.urls import reverse
+
+from .models import Event, EventRegistration, Sport, Location
 from .forms import EventRegistrationForm
 from django.utils.dateparse import parse_date
 
@@ -11,52 +13,46 @@ from django.utils.dateparse import parse_date
 def index(request):
     return render(request, 'gornyak/index.html')
 
-@login_required
-def register_for_event(request, event_id):
-    event = Event.objects.get(id=event_id)
-    if EventRegistration.objects.filter(event=event, user=request.user).exists():
-        messages.error(request, 'You have already registered for this event.')
-        return redirect('event_detail', event_id=event.id)
-
-    if request.method == 'POST':
-        form = EventRegistrationForm(request.POST)
-        if form.is_valid():
-            registration = form.save(commit=False)
-            registration.user = request.user
-            registration.save()
-            messages.success(request, 'You have successfully registered for the event.')
-            return redirect('event_detail', event_id=event.id)
-    else:
-        form = EventRegistrationForm(initial={'event': event, 'user': request.user})
-
-    return render(request, 'gornyak/register_for_event.html', {'form': form, 'event': event})
-
-
 def event_list(request):
-    sport_type = request.GET.get('sport_type')
-    location = request.GET.get('location')
-    date = request.GET.get('date')
-
     events = Event.objects.all()
+    sport_types = Sport.objects.all()
+    locations = Location.objects.all()
 
-    if sport_type:
-        events = events.filter(sport_type=sport_type)
-    if location:
-        events = events.filter(location=location)
-    if date:
-        events = events.filter(start_datetime__date__gte=parse_date(date))
+    selected_sport = request.GET.get('sport_type')
+    selected_location = request.GET.get('location')
+    selected_date = request.GET.get('date')
 
-    # Получение уникальных значений для типов спорта и локаций
-    sport_types = Event.objects.values_list('sport_type', flat=True).distinct()
-    locations = Event.objects.values_list('location', flat=True).distinct()
+    if selected_sport:
+        events = events.filter(sport_type__id=selected_sport)
+    if selected_location:
+        events = events.filter(location__id=selected_location)
+    if selected_date:
+        events = events.filter(start_datetime__date__gte=selected_date)
 
     return render(request, 'gornyak/event_list.html', {
         'events': events,
         'sport_types': sport_types,
         'locations': locations,
+        'selected_sport': selected_sport,
+        'selected_location': selected_location,
+        'selected_date': selected_date,
+    })
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    user_registered = False
+    if request.user.is_authenticated:
+        user_registered = EventRegistration.objects.filter(event=event, user=request.user).exists()
+    registration_count = EventRegistration.objects.filter(event=event).count()
+    return render(request, 'gornyak/event_detail.html', {
+        'event': event,
+        'user_registered': user_registered,
+        'registration_count': registration_count,
     })
 
 @login_required
-def event_detail(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    return render(request, 'gornyak/event_detail.html', {'event': event})
+def register_for_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if not EventRegistration.objects.filter(event=event, user=request.user).exists():
+        EventRegistration.objects.create(event=event, user=request.user)
+    return redirect(reverse('event_detail', args=[event.id]))

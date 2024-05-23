@@ -3,7 +3,17 @@ from django.contrib.auth.admin import UserAdmin
 
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from accounts.models import CustomUser
-from .models import Event , EventRegistration
+from .models import Event, EventRegistration, Sport, Location
+
+
+@admin.register(Sport)
+class SportAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
@@ -16,8 +26,6 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     list_display = ('event', 'user', 'registration_date')
     list_filter = ('event', 'user')
     search_fields = ('event__name', 'user__username')
-
-
 
 
 class CustomUserAdmin(UserAdmin):

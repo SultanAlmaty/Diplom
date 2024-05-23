@@ -7,4 +7,14 @@
 <p>Отчество: {{ user.middle_name }}</p>
 <p>Группа: {{ user.group_name }}</p>
 <p>Шифр студента: {{ user.username }}</p>
+
+<h2>Мои регистрации на мероприятия</h2>
+<ul>
+    {% for registration in user.eventregistration_set.all %}
+        <li><a href="{% url 'event_detail' registration.event.id %}">{{ registration.event.name }}</a> ({{ registration.event.start_datetime|date:"d M Y" }})</li>
+    {% empty %}
+        <li>Вы не зарегистрированы ни на одно мероприятие.</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}
