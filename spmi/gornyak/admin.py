@@ -17,8 +17,9 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'sport_type', 'organizer', 'status')
-    list_filter = ('sport_type', 'status')
+    list_display = ('name', 'start_datetime', 'end_datetime', 'location', 'sport_type', 'status', 'registration_open', 'event_type')
+    list_editable = ('registration_open',)
+    list_filter = ('sport_type', 'status', 'event_type')
     search_fields = ('name', 'location', 'organizer')
 
 @admin.register(EventRegistration)

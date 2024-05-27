@@ -25,18 +25,17 @@ class Location(models.Model):
 
 
 class Event(models.Model):
-    STATUS_CHOICES = [
-        ('scheduled', 'Scheduled'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
+    EVENT_STATUS_CHOICES = [
+        ('registration', 'Регистрация'),
+        ('completed', 'Завершено'),
     ]
 
-    SPORT_CHOICES = [
-        ('football', 'Football'),
-        ('basketball', 'Basketball'),
-        ('running', 'Running'),
-        # Добавьте другие виды спорта по необходимости
+    EVENT_TYPE_CHOICES = [
+        ('individual', 'Individual'),
+        ('team', 'Team'),
     ]
+
+
     name = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()  # Поле для начала мероприятия
     end_datetime = models.DateTimeField()  # Поле для конца мероприятия
@@ -44,7 +43,9 @@ class Event(models.Model):
     description = models.TextField(blank=True, null=True)
     sport_type = models.ForeignKey(Sport, on_delete=models.CASCADE)
     organizer = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='scheduled')
+    status = models.CharField(max_length=50, choices=EVENT_STATUS_CHOICES, default='registration')
+    registration_open = models.BooleanField(default=True)
+    event_type = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default='individual')
 
     class Meta:
         db_table = 'event_table'

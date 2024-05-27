@@ -20,19 +20,22 @@
 
 <h3>Количество зарегистрированных участников: {{ registration_count }}</h3>
 
-{% if user.is_authenticated %}
-    {% if not user_registered %}
-        <form method="post" action="{% url 'register_for_event' event.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Регистрация на мероприятие</button>
-        </form>
+{% if event.registration_open %}
+    {% if user.is_authenticated %}
+        {% if not user_registered %}
+            <form method="post" action="{% url 'register_for_event' event.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Регистрация на мероприятие</button>
+            </form>
+        {% else %}
+            <p>Вы уже зарегистрированы на это мероприятие.</p>
+        {% endif %}
     {% else %}
-        <p>Вы уже зарегистрированы на это мероприятие.</p>
+        <p>Пожалуйста, <a href="{% url 'login' %}">войдите</a> для регистрации на мероприятие.</p>
     {% endif %}
 {% else %}
-    <p>Пожалуйста, <a href="{% url 'login' %}">войдите</a> для регистрации на мероприятие.</p>
+    <p>Регистрация на это мероприятие закрыта.</p>
 {% endif %}
-
 
 <!-- Кнопка возврата -->
 <a href="{% url 'event_list' %}" class="btn btn-primary mt-3">Back to Events</a>
