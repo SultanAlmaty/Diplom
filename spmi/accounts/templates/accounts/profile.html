@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-2 d-flex align-items-end">
+        <div class="col-12 mb-2 d-flex justify-content-center">
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <td>{{ event.sport_type.name }}</td>
                 <td>{{ event.get_event_type_display }}</td>
                 <td>{{ event.get_status_display }}</td>
-                <td><a href="{% url 'event_detail' event.id %}">More</a></td>
+                <td><a href="{% url 'event_detail' event.id %}">Подробнее</a></td>
             </tr>
         {% endfor %}
     </tbody>
