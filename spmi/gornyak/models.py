@@ -31,10 +31,9 @@ class Event(models.Model):
     ]
 
     EVENT_TYPE_CHOICES = [
-        ('individual', 'Individual'),
-        ('team', 'Team'),
+        ('individual', 'Индивидуальное'),
+        ('team', 'Командное'),
     ]
-
 
     name = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()  # Поле для начала мероприятия
@@ -46,12 +45,13 @@ class Event(models.Model):
     status = models.CharField(max_length=50, choices=EVENT_STATUS_CHOICES, default='registration')
     registration_open = models.BooleanField(default=True)
     event_type = models.CharField(max_length=10, choices=EVENT_TYPE_CHOICES, default='individual')
+    link = models.URLField(blank=True, null=True)
 
     class Meta:
         db_table = 'event_table'
         verbose_name = 'Мероприятие'
         verbose_name_plural = 'Мероприятия'
-        ordering = ['start_datetime']
+        ordering = ['status','start_datetime']
         unique_together = ['name', 'start_datetime']
 
     def __str__(self):
@@ -64,8 +64,8 @@ class EventRegistration(models.Model):
 
     class Meta:
         unique_together = ['event', 'user']
-        verbose_name = 'Event Registration'
-        verbose_name_plural = 'Event Registrations'
+        verbose_name = 'Регистрация'
+        verbose_name_plural = 'Регистрации'
 
     def __str__(self):
         return f'{self.user} registered for {self.event}'

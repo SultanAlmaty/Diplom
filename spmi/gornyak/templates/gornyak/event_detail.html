@@ -1,4 +1,4 @@
-{% extends 'gornyak/index.html' %}
+{% extends 'gornyak/base.html' %}
 
 {% block content %}
 <!-- Центрирование заголовка -->
@@ -11,7 +11,12 @@
     <p><strong>Локация:</strong> <span>{{ event.location }}</span></p>
     <p><strong>Вид спорта:</strong> <span>{{ event.sport_type }}</span></p>
     <p><strong>Статус:</strong> <span>{{ event.get_status_display }}</span></p>
+    {% if event.link %}
+        <p><strong>Ссылка:</strong> <a href="{{ event.link }}">{{ event.link }}</a></p>
+    {% endif %}
 </div>
+
+
 
 <!-- Описание с большим шрифтом -->
 <div class="mt-4">
@@ -38,5 +43,5 @@
 {% endif %}
 
 <!-- Кнопка возврата -->
-<a href="{% url 'event_list' %}" class="btn btn-primary mt-3">Back to Events</a>
+<a href="{% url 'event_list' %}" class="btn btn-primary mt-3">Назад</a>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Case, When, Value, IntegerField
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -11,7 +12,7 @@ from django.utils.dateparse import parse_date
 
 
 def index(request):
-    return render(request, 'gornyak/index.html')
+    return render(request, 'gornyak/base.html')
 
 def event_list(request):
     sport_type = request.GET.get('sport_type')
@@ -27,11 +28,20 @@ def event_list(request):
     if location:
         events = events.filter(location__id=location)
     if date:
-        events = events.filter(start_datetime__date=date)
+        events = events.filter(start_datetime__date__gte=date)
     if event_type:
         events = events.filter(event_type=event_type)
     if status:
         events = events.filter(status=status)
+
+    events = events.annotate(
+        status_order=Case(
+            When(status='registration', then=Value(1)),
+            When(status='completed', then=Value(2)),
+            default=Value(3),
+            output_field=IntegerField(),
+        )
+    ).order_by('status_order', 'start_datetime')
 
     paginator = Paginator(events, 10)  # 10 events per page
     page_number = request.GET.get('page')
@@ -54,11 +64,13 @@ def event_detail(request, event_id):
     user_registered = False
     if request.user.is_authenticated:
         user_registered = EventRegistration.objects.filter(event=event, user=request.user).exists()
-    registration_count = EventRegistration.objects.filter(event=event).count()
-    if request.method == 'POST':
-        if not user_registered and event.registration_open:
-            EventRegistration.objects.create(event=event, user=request.user)
-            return redirect('event_detail', event_id=event.id)
+        registration_count = EventRegistration.objects.filter(event=event).count()
+        if request.method == 'POST':
+            if not user_registered and event.registration_open:
+                EventRegistration.objects.create(event=event, user=request.user)
+                return redirect('event_detail', event_id=event.id)
+    else:
+        return redirect('accounts:login')
 
 
     return render(request, 'gornyak/event_detail.html', {
